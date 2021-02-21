@@ -16,7 +16,7 @@ import pessoal.Cliente;
  */
 public class ClienteTableModel extends AbstractTableModel{
 
-    public List<Cliente> clientes = new ArrayList<Cliente>();
+    private List<Cliente> clientes = new ArrayList<Cliente>();
     private String[] colunas = {"Nome", "Sobrenome", "CPF"};
 
     @Override

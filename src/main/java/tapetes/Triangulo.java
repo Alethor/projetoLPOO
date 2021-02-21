@@ -5,24 +5,24 @@
  */
 package tapetes;
 
-import materiais.Material;
+
 
 /**
  *
  * @author erick
  */
-public class Triangulo extends Tapete{
+public class Triangulo extends Forma{
     
     private double base;
     private double h;
+    
 
     public Triangulo() {
     }
 
-    public Triangulo(double base, double h, double area, Material material, double preco) {
-        super(area, material, preco);
-        this.base = base;
-        this.h = h;
+    public Triangulo(double area) {
+        super(area);
+       
     }
 
     public double getBase() {
@@ -40,10 +40,19 @@ public class Triangulo extends Tapete{
     public void setH(double h) {
         this.h = h;
     }
+   
     
-    private void calculaAreaTriangulo(double base, double h){
-        this.setArea((base * h)/2);
     
+    public void calculaAreaTriangulo(double base, double h){
+       this.setBase(base);
+       this.setH(h);
+       this.setArea((base * h)/2);
+    
+    }
+    
+    public void calculaBaseAlturaTriangulo(double area){
+           this.setBase(Math.sqrt(2*area));
+           this.setH(Math.sqrt(2*area));
     }
     
     

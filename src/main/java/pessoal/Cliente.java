@@ -14,6 +14,7 @@ public class Cliente {
     private String nome;
     private String sobrenome;
     private long cpf;
+    private Pedido pedido;
 
     public Cliente() {
     }
@@ -46,6 +47,14 @@ public class Cliente {
 
     public void setCpf(long cpf) {
         this.cpf = cpf;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
     
     

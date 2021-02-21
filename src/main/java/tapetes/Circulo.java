@@ -5,22 +5,22 @@
  */
 package tapetes;
 
-import materiais.Material;
+
 
 /**
  *
  * @author erick
  */
-public class Circulo extends Tapete{
+public class Circulo extends Forma{
     
     private double raio;
 
     public Circulo(){
     }
-    
-    public Circulo(double area, Material material, double preco, double raio) {
-        super(area, material, preco);
-        this.raio = raio;
+
+    public Circulo(double area) {
+        super(area);
+        
     }
 
     public double getRaio() {
@@ -32,7 +32,13 @@ public class Circulo extends Tapete{
     }
     
     public void calculaAreaCirculo(double raio){
+        this.setRaio(raio);
         this.setArea((3.14 * (Math.pow(raio, 2))));
     }
     
+    public void calculaRaioCirculo(double area){
+        this.setRaio(Math.sqrt(area/3.14));
+    }
+    
 }
+

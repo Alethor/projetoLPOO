@@ -5,25 +5,25 @@
  */
 package tapetes;
 
-import materiais.Material;
+
 
 /**
  *
  * @author erick
  */
-public class Retangulo extends Tapete{
+public class Retangulo extends Forma{
     
-    private double base;
-    private double h;
+   private double base;
+   private double h;
+   
     
 
     public Retangulo() {
     }
 
-    public Retangulo(double base, double h, double area, Material material, double preco) {
-        super(area, material, preco);
-        this.base = base;
-        this.h = h;
+    public Retangulo(double area) {
+        super(area);
+       
     }
 
     public double getBase() {
@@ -41,10 +41,20 @@ public class Retangulo extends Tapete{
     public void setH(double h) {
         this.h = h;
     }
+   
+    
     
     public void calculaAreaRetangulo(double base, double h){
+        this.setBase(base);
+        this.setH(h);
         this.setArea(base * h);
     
+    }
+    
+    public void calculaBaseAltura(double area){
+        this.setBase(Math.sqrt(area));
+        this.setH(Math.sqrt(area));
+       
     }
      
     

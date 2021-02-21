@@ -13,27 +13,21 @@ import materiais.Material;
  */
 public class Tapete {
     
-    protected double area;
+   
     protected Material material;
     protected double preco;
+    protected Forma forma;
     
     public Tapete(){}
 
-    public Tapete(double area, Material material, double preco) {
-        this.area = area;
+    public Tapete(Material material, double preco) {
+       
         this.material = material;
         this.preco = preco;
     }
     
    
     
-    public double getArea() {
-        return area;
-    }
-
-    public void setArea(double area) {
-        this.area = area;
-    }
 
     public Material getMaterial() {
         return material;
@@ -51,7 +45,18 @@ public class Tapete {
         this.preco = preco;
     }
     
-     public void calculaPreco(double area){
-        this.setPreco(this.getMaterial().getPreco() * area);
+     public void calculaPreco(){
+        this.setPreco((this.getMaterial().getPreco()) * (this.getForma().getArea()));
     }
+
+    public Forma getForma() {
+        return forma;
+    }
+
+    public void setForma(Forma forma) {
+        this.forma = forma;
+    }
+     
+     
+     
 }

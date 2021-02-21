@@ -6,9 +6,20 @@
 package aplicacao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import model.ClienteTableModel;
 import pessoal.Cliente;
+
+import javax.swing.JOptionPane;
+import materiais.Material;
+import model.PedidoTableModel;
+import pessoal.Pedido;
+import tapetes.Circulo;
+import tapetes.Retangulo;
+import tapetes.Tapete;
+import tapetes.Triangulo;
 
 /**
  *
@@ -20,12 +31,27 @@ public class Aplicacao extends javax.swing.JFrame {
      * Creates new form Aplicacao
      */
    List<Cliente> lista = new ArrayList<>();
-    ClienteTableModel tabelaCliente = new ClienteTableModel();
+   ClienteTableModel tabelaCliente = new ClienteTableModel();
+   PedidoTableModel tabelaPedido = new PedidoTableModel();
+   HashMap<Long, Cliente> listaBuscaCpf = new HashMap();
+   HashMap<String, Material> listaMateriais = new HashMap();
+   Cliente cliente = new Cliente();
+   
+   
     
     public Aplicacao() {
+        Material comum = new Material("Comum",20.0);
+        Material luxo = new Material("Luxo",30.0);
+        Material premium = new Material("Premium",50.0);
+        
+        listaMateriais.put("Comum", comum);
+        listaMateriais.put("Luxo", luxo);
+        listaMateriais.put("Premium", premium);
+        
         initComponents();
         jTClientes.setModel(tabelaCliente);
-       
+        jTPedido.setModel(tabelaPedido);
+        
     }
 
     /**
@@ -37,6 +63,9 @@ public class Aplicacao extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         painelCliente = new javax.swing.JPanel();
         lNome = new javax.swing.JLabel();
@@ -57,7 +86,6 @@ public class Aplicacao extends javax.swing.JFrame {
         painelPedido = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        cpfBusca = new javax.swing.JTextField();
         cpfBuscar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         nomeCliente = new javax.swing.JTextField();
@@ -66,10 +94,39 @@ public class Aplicacao extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        formaComboBox = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        materialComboBox = new javax.swing.JComboBox<>();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        jLabel8 = new javax.swing.JLabel();
+        textAltura = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        textBase = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        textArea = new javax.swing.JTextField();
+        cpfBusca = new javax.swing.JTextField();
+        try{ javax.swing.text.MaskFormatter cpf= new javax.swing.text.MaskFormatter("###.###.###-##"); textTotal = new javax.swing.JFormattedTextField(cpf); } catch (Exception e){ }
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel11 = new javax.swing.JLabel();
+        excluirItemPedido = new javax.swing.JButton();
+        incluirItemPedido = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTPedido = new javax.swing.JTable();
+        jLabel12 = new javax.swing.JLabel();
+        textTotal = new javax.swing.JTextField();
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -171,7 +228,7 @@ public class Aplicacao extends javax.swing.JFrame {
                         .addComponent(buscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(limpar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE)
                         .addComponent(incluir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(atualizar)
@@ -196,7 +253,7 @@ public class Aplicacao extends javax.swing.JFrame {
                     .addComponent(lCpf))
                 .addGap(32, 32, 32)
                 .addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(painelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(incluir)
@@ -205,7 +262,8 @@ public class Aplicacao extends javax.swing.JFrame {
                     .addComponent(buscar)
                     .addComponent(limpar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(319, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Cliente", painelCliente);
@@ -215,17 +273,17 @@ public class Aplicacao extends javax.swing.JFrame {
 
         jLabel2.setText("CPF cliente: ");
 
-        cpfBusca.addActionListener(new java.awt.event.ActionListener() {
+        cpfBuscar.setText("Buscar");
+        cpfBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cpfBuscaActionPerformed(evt);
+                cpfBuscarActionPerformed(evt);
             }
         });
-
-        cpfBuscar.setText("Buscar");
 
         jLabel3.setText("Nome:");
 
         nomeCliente.setEditable(false);
+        nomeCliente.setBackground(new java.awt.Color(204, 204, 204));
         nomeCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nomeClienteActionPerformed(evt);
@@ -235,17 +293,88 @@ public class Aplicacao extends javax.swing.JFrame {
         jLabel4.setText("Sobrenome:");
 
         sobrenomeCliente.setEditable(false);
+        sobrenomeCliente.setBackground(new java.awt.Color(204, 204, 204));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel5.setText("Item Pedido");
 
         jLabel6.setText("Forma do Tapete:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        formaComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Círculo", "Retângulo", "Triângulo" }));
+        formaComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                formaComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("Material do Tapete: ");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        materialComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Comum", "Luxo", "Premium" }));
+        materialComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                materialComboBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Altura ou raio (m):");
+
+        textAltura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textAlturaActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("Largura (m):");
+
+        jLabel10.setText("Área (m²):");
+
+        textArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textAreaActionPerformed(evt);
+            }
+        });
+
+        cpfBusca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cpfBuscaActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel11.setText("Pedido");
+
+        excluirItemPedido.setText("Excluir Item Pedido");
+        excluirItemPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                excluirItemPedidoActionPerformed(evt);
+            }
+        });
+
+        incluirItemPedido.setText("Incluir Item Pedido");
+        incluirItemPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incluirItemPedidoActionPerformed(evt);
+            }
+        });
+
+        jTPedido.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTPedido);
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel12.setText("Total pedido:");
+
+        textTotal.setEditable(false);
+        textTotal.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout painelPedidoLayout = new javax.swing.GroupLayout(painelPedido);
         painelPedido.setLayout(painelPedidoLayout);
@@ -254,43 +383,62 @@ public class Aplicacao extends javax.swing.JFrame {
             .addGroup(painelPedidoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator2)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSeparator1)
                     .addGroup(painelPedidoLayout.createSequentialGroup()
-                        .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(painelPedidoLayout.createSequentialGroup()
-                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, painelPedidoLayout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(41, 41, 41)
-                                        .addComponent(cpfBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, painelPedidoLayout.createSequentialGroup()
+                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelPedidoLayout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(43, 43, 43))
                                     .addGroup(painelPedidoLayout.createSequentialGroup()
                                         .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelPedidoLayout.createSequentialGroup()
-                                                .addComponent(jLabel3)
-                                                .addGap(70, 70, 70))
-                                            .addGroup(painelPedidoLayout.createSequentialGroup()
-                                                .addComponent(jLabel4)
-                                                .addGap(43, 43, 43)))
-                                        .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(nomeCliente)
-                                            .addComponent(sobrenomeCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))))
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel3))
+                                        .addGap(41, 41, 41)))
+                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(nomeCliente)
+                                    .addComponent(sobrenomeCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                                    .addComponent(cpfBusca))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(cpfBuscar))
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel1)
-                            .addGroup(painelPedidoLayout.createSequentialGroup()
-                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, painelPedidoLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, painelPedidoLayout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(81, 81, 81)
-                                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 199, Short.MAX_VALUE)))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, painelPedidoLayout.createSequentialGroup()
+                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(formaComboBox, 0, 174, Short.MAX_VALUE)
+                                    .addComponent(textAltura)
+                                    .addComponent(textArea))
+                                .addGap(37, 37, 37)
+                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel9))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(materialComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textBase, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 120, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelPedidoLayout.createSequentialGroup()
+                        .addGap(0, 344, Short.MAX_VALUE)
+                        .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelPedidoLayout.createSequentialGroup()
+                                .addComponent(excluirItemPedido)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(incluirItemPedido))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelPedidoLayout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addGap(40, 40, 40)
+                                .addComponent(textTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         painelPedidoLayout.setVerticalGroup(
@@ -301,12 +449,12 @@ public class Aplicacao extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(cpfBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cpfBuscar))
+                    .addComponent(cpfBuscar)
+                    .addComponent(cpfBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(nomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
@@ -320,15 +468,37 @@ public class Aplicacao extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(formaComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(materialComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(painelPedidoLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(textBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textAltura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(textArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(excluirItemPedido)
+                    .addComponent(incluirItemPedido))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addGap(20, 20, 20)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(painelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(textTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(128, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Pedido", painelPedido);
@@ -344,9 +514,10 @@ public class Aplicacao extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1))
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
         );
 
         pack();
@@ -366,10 +537,14 @@ public class Aplicacao extends javax.swing.JFrame {
 
     private void excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirActionPerformed
         if(jTClientes.getSelectedRow() != -1){
-        
-            tabelaCliente.setClientes(lista);
+           
+            
+            Long exCpf = (Long) jTClientes.getValueAt(jTClientes.getSelectedRow(), 2);
+           
+            listaBuscaCpf.remove(exCpf);
+            
             lista.remove(jTClientes.getSelectedRow());
-            tabelaCliente.fireTableRowsDeleted(jTClientes.getSelectedRow(), jTClientes.getSelectedRow());
+            tabelaCliente.removeRow(jTClientes.getSelectedRow());
             
         }
     }//GEN-LAST:event_excluirActionPerformed
@@ -380,23 +555,34 @@ public class Aplicacao extends javax.swing.JFrame {
         c.setNome(nome.getText());
         c.setSobrenome(sobrenome.getText());
         c.setCpf(Long.parseLong(cpf.getText()));
+        
+                               
+        Cliente var = listaBuscaCpf.putIfAbsent(Long.parseLong(cpf.getText()), new Cliente(nome.getText(), sobrenome.getText(), Long.parseLong(cpf.getText())));
+        if(var == null){
+        tabelaCliente.addRow(c);
         lista.add(c);
-        tabelaCliente.setClientes(lista);
-        tabelaCliente.fireTableDataChanged();
+        }else{
+            JOptionPane.showMessageDialog(null, "Esse cliente já está cadastrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
        
     }//GEN-LAST:event_incluirActionPerformed
 
     private void atualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizarActionPerformed
         if(jTClientes.getSelectedRow() != -1){
-            Cliente c = new Cliente();
-            int linha = jTClientes.getSelectedRow();
+           
       
             lista.get(jTClientes.getSelectedRow()).setNome(nome.getText());
             lista.get(jTClientes.getSelectedRow()).setSobrenome(sobrenome.getText());
             lista.get(jTClientes.getSelectedRow()).setCpf(Long.parseLong(cpf.getText()));
             
-            tabelaCliente.setClientes(lista);
-            tabelaCliente.fireTableRowsUpdated(linha, linha);
+            listaBuscaCpf.remove((Long) tabelaCliente.getValueAt(jTClientes.getSelectedRow(), 2));
+            listaBuscaCpf.put(Long.parseLong(cpf.getText()), new Cliente(nome.getText(), sobrenome.getText(), Long.parseLong(cpf.getText())));
+            
+            tabelaCliente.setValueAt(nome.getText(), jTClientes.getSelectedRow(), 0);
+            tabelaCliente.setValueAt(sobrenome.getText(), jTClientes.getSelectedRow(), 1);
+            tabelaCliente.setValueAt(cpf.getText(), jTClientes.getSelectedRow(), 2);
+            
+            
         }
     }//GEN-LAST:event_atualizarActionPerformed
 
@@ -420,13 +606,181 @@ public class Aplicacao extends javax.swing.JFrame {
         tabelaCliente.fireTableDataChanged();
     }//GEN-LAST:event_limparActionPerformed
 
+    private void nomeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeClienteActionPerformed
+        
+    }//GEN-LAST:event_nomeClienteActionPerformed
+
+    private void cpfBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpfBuscarActionPerformed
+         
+         
+         List<Tapete> n = new ArrayList<>();
+        
+        
+         tabelaPedido.setItens(n);
+         tabelaPedido.fireTableDataChanged();
+         textTotal.setText("0");
+         
+         if(lista.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Nenhum cliente cadastrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }else{
+                cliente = listaBuscaCpf.get(Long.parseLong(cpfBusca.getText()));
+        
+            if(cliente != null){
+               nomeCliente.setText(cliente.getNome());
+               sobrenomeCliente.setText(cliente.getSobrenome());
+             if(cliente.getPedido() != null){
+                 tabelaPedido.setItens(cliente.getPedido().getTapete());  
+                 tabelaPedido.fireTableDataChanged();
+                 cliente.getPedido().atualizaTotal();
+                 textTotal.setText(Double.toString(cliente.getPedido().getTotal()));
+             }
+            }else{
+                nomeCliente.setText("");
+                sobrenomeCliente.setText("");
+        }
+        }
+    }//GEN-LAST:event_cpfBuscarActionPerformed
+
+   
+    
+    private void materialComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_materialComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_materialComboBoxActionPerformed
+
+    private void textAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAreaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textAreaActionPerformed
+
     private void cpfBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpfBuscaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cpfBuscaActionPerformed
 
-    private void nomeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeClienteActionPerformed
+    private void incluirItemPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incluirItemPedidoActionPerformed
+        
+      Pedido pedido = new Pedido();
+     
+      Tapete tapetePedido = new Tapete();
+ 
+      
+      
+     if(cliente.getNome() == null){
+         JOptionPane.showMessageDialog(null, "Selecione um cliente primeiro", "Erro", JOptionPane.ERROR_MESSAGE);
+     }
+     else if(textAltura.getText().isBlank() && (textBase.getText().isBlank()) && textArea.getText().isBlank()){
+        JOptionPane.showMessageDialog(null, "Insira pelo menos uma área para incluir um tapete", "Erro", JOptionPane.ERROR_MESSAGE);
+     }else{
+      switch((String)formaComboBox.getSelectedItem()){
+          case "Círculo":
+             
+              Circulo tapeteCirculo = new Circulo();
+              tapeteCirculo.setTipo((String)formaComboBox.getSelectedItem());
+              
+              if(textArea.getText().isBlank()){
+                 tapeteCirculo.calculaAreaCirculo(Double.parseDouble(textAltura.getText()));
+                 textArea.setText(Double.toString(tapeteCirculo.getArea()));
+              }else{
+                tapeteCirculo.calculaRaioCirculo(Double.parseDouble(textArea.getText()));
+                tapeteCirculo.setArea(Double.parseDouble(textArea.getText()));
+                textAltura.setText(Double.toString(tapeteCirculo.getRaio()));
+              
+              }
+              tapetePedido.setForma(tapeteCirculo);
+             
+              break;
+          case "Retângulo":
+              Retangulo tapeteRetangulo = new Retangulo();
+              tapeteRetangulo.setTipo((String)formaComboBox.getSelectedItem());
+              
+              if(textArea.getText().isBlank()){
+                tapeteRetangulo.calculaAreaRetangulo(Double.parseDouble(textBase.getText()), Double.parseDouble(textAltura.getText()));
+                textArea.setText(Double.toString(tapeteRetangulo.getArea()));
+                
+                }
+              else{
+                 tapeteRetangulo.calculaBaseAltura(Double.parseDouble(textArea.getText()));
+                 tapeteRetangulo.setArea(Double.parseDouble(textArea.getText()));
+                 textBase.setText(Double.toString(tapeteRetangulo.getBase()));
+                 textAltura.setText(Double.toString(tapeteRetangulo.getH()));
+                
+              }
+              
+              tapetePedido.setForma(tapeteRetangulo);
+              break;
+          case "Triângulo":
+              Triangulo tapeteTriangulo = new Triangulo();
+              tapeteTriangulo.setTipo((String)formaComboBox.getSelectedItem());
+              
+              if(textArea.getText().isBlank()){
+                  tapeteTriangulo.calculaAreaTriangulo(Double.parseDouble(textBase.getText()), Double.parseDouble(textAltura.getText()));
+                  textArea.setText(Double.toString(tapeteTriangulo.getArea()));
+              }else{
+                  tapeteTriangulo.calculaBaseAlturaTriangulo(Double.parseDouble(textArea.getText()));
+                  tapeteTriangulo.setArea(Double.parseDouble(textArea.getText()));
+                  textBase.setText(Double.toString(tapeteTriangulo.getBase()));
+                  textAltura.setText(Double.toString(tapeteTriangulo.getH()));
+              }
+              
+              tapetePedido.setForma(tapeteTriangulo);
+              break;
+        }
+      
+        switch((String) materialComboBox.getSelectedItem()){
+            case "Comum":
+                tapetePedido.setMaterial(listaMateriais.get("Comum"));
+                break;
+            case "Luxo":
+                tapetePedido.setMaterial(listaMateriais.get("Luxo"));
+                break;
+            case "Premium":
+                tapetePedido.setMaterial(listaMateriais.get("Premium"));
+                break;
+                
+        
+        }
+      
+        
+        
+        tapetePedido.calculaPreco();
+        Random g = new Random();
+        if(cliente.getPedido() == null){
+            pedido.setId(g.nextInt());
+            pedido.getTapete().add(tapetePedido);
+            cliente.setPedido(pedido);
+        }else{
+            cliente.getPedido().getTapete().add(tapetePedido);
+           
+        }
+        listaBuscaCpf.replace(cliente.getCpf(), cliente);
+        tabelaPedido.setItens(cliente.getPedido().getTapete());
+        tabelaPedido.fireTableDataChanged();
+        cliente.getPedido().atualizaTotal();
+        textTotal.setText(Double.toString(cliente.getPedido().getTotal()));
+
+       
+             
+      }  
+    }//GEN-LAST:event_incluirItemPedidoActionPerformed
+
+    private void formaComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_formaComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nomeClienteActionPerformed
+    }//GEN-LAST:event_formaComboBoxActionPerformed
+
+    private void textAlturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAlturaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textAlturaActionPerformed
+
+    private void excluirItemPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirItemPedidoActionPerformed
+       
+        if(jTPedido.getSelectedRow() != -1){
+          
+            tabelaPedido.removeRow(jTPedido.getSelectedRow());
+            cliente.getPedido().getTapete().remove(jTPedido.getSelectedRow());
+            listaBuscaCpf.replace(cliente.getCpf(), cliente);
+            cliente.getPedido().atualizaTotal();
+            textTotal.setText(Double.toString(cliente.getPedido().getTotal()));
+            
+        }
+    }//GEN-LAST:event_excluirItemPedidoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -470,32 +824,49 @@ public class Aplicacao extends javax.swing.JFrame {
     private javax.swing.JTextField cpfBusca;
     private javax.swing.JButton cpfBuscar;
     private javax.swing.JButton excluir;
+    private javax.swing.JButton excluirItemPedido;
     private javax.swing.Box.Filler filler1;
+    private javax.swing.JComboBox<String> formaComboBox;
     private javax.swing.JButton incluir;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JButton incluirItemPedido;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTClientes;
+    private javax.swing.JTable jTPedido;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lCpf;
     private javax.swing.JLabel lNome;
     private javax.swing.JLabel lSobrenome;
     private javax.swing.JButton limpar;
+    private javax.swing.JComboBox<String> materialComboBox;
     private javax.swing.JTextField nome;
     private javax.swing.JTextField nomeCliente;
     private javax.swing.JPanel painelCliente;
     private javax.swing.JPanel painelPedido;
     private javax.swing.JTextField sobrenome;
     private javax.swing.JTextField sobrenomeCliente;
+    private javax.swing.JTextField textAltura;
+    private javax.swing.JTextField textArea;
+    private javax.swing.JTextField textBase;
     private javax.swing.JTextField textBusca;
+    private javax.swing.JTextField textTotal;
     // End of variables declaration//GEN-END:variables
 }

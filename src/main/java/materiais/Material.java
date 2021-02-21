@@ -12,12 +12,12 @@ package materiais;
 public class Material {
     
     private String tipo;
-    private float preco;
+    private double preco;
     
     public Material(){
     }
 
-    public Material(String tipo, float preco) {
+    public Material(String tipo, double preco) {
         this.tipo = tipo;
         this.preco = preco;
     }
@@ -30,11 +30,11 @@ public class Material {
         this.tipo = tipo;
     }
 
-    public float getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(float preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
     
